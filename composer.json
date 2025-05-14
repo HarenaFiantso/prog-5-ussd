@@ -1,0 +1,46 @@
+{
+  "name": "harenafiantso/prog-5-ussd",
+  "description": "Brown Money! Implement good development practices by implementing USSD simulation",
+  "type": "project",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "FiantsoHarena",
+      "email": "fiantsorav@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.1"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "Harenafiantso\\Prog5Ussd\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Harenafiantso\\Prog5Ussd\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "lint": "phpcs --standard=PSR12 src/",
+    "lint-fix": "phpcbf --standard=PSR12 src/",
+    "check": [
+      "@lint",
+      "@test"
+    ],
+    "post-install-cmd": "@check",
+    "post-update-cmd": "@check"
+  },
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
