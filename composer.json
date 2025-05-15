@@ -17,7 +17,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Harenafiantso\\Prog5Ussd\\": "src/ menus/"
+      "Harenafiantso\\Prog5Ussd\\": "src/"
     }
   },
   "autoload-dev": {
