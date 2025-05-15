@@ -17,7 +17,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Harenafiantso\\Prog5Ussd\\": "src/"
+      "Harenafiantso\\Prog5Ussd\\": "src/ menus/"
     }
   },
   "autoload-dev": {
@@ -26,8 +26,8 @@
     }
   },
   "scripts": {
-    "lint": "phpcs --standard=PSR12 src/",
-    "lint-fix": "phpcbf --standard=PSR12 src/",
+    "lint": "phpcs --standard=PSR12 src/ menus/",
+    "lint-fix": "phpcbf --standard=PSR12 src/ menus/",
     "check": [
       "@lint",
       "@test"
