@@ -58,7 +58,7 @@ class UssdSimulator
     private function displayMenu(array $menu): void
     {
         foreach ($menu as $key => $value) {
-            if (in_array($key, ['title'], true)) continue;
+            if ($key === 'title') continue;
             if (is_array($value) && isset($value['title'])) {
                 echo "$key. {$value['title']}\n";
             } elseif (is_string($value)) {
@@ -84,7 +84,12 @@ class UssdSimulator
 
     private function goBack(): void
     {
-        echo "Retour...\n";
+        if (empty($this->history)) {
+            $this->goToMainMenu();
+        } else {
+            $previousMenu = array_pop($this->history);
+            $this->navigate($previousMenu);
+        }
     }
 
     #[NoReturn] public function exit(): void
