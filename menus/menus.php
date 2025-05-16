@@ -4,7 +4,7 @@ const ACTION_EXIT = "exit";
 const ACTION_MAIN_MENU = "mainMenu";
 const ACTION_BACK = "back";
 
-function getMenus()
+function getMenus(): array
 {
     return [
         'options' => [
@@ -80,9 +80,6 @@ function getMenus()
                     '0' => ACTION_BACK
                 ]
             ],
-            '6' => ['title' => "Carte VISA Akory"],
-            '7' => ['title' => "Compte Karama"],
-            '8' => ['title' => "Retrait"],
             '#' => ACTION_EXIT
         ]
     ];
