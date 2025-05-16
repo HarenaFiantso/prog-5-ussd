@@ -51,8 +51,17 @@ class UssdSimulator
 
     private function prompt(): string
     {
-        echo "Choisissez une option : ";
-        return trim(fgets(STDIN));
+        echo "Choisissez une option (# pour quitter) : ";
+        $input = trim(fgets(STDIN));
+        if ($input === '#') {
+            $this->exit();
+        }
+        if (!is_numeric($input) || $input === '') {
+            echo "Option invalide, veuillez entrer un numéro ou # pour quitter.\n";
+            return $this->prompt();
+        }
+
+        return $input;
     }
 
     private function displayMenu(array $menu): void
