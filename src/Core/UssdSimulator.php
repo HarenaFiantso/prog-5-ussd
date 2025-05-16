@@ -58,7 +58,9 @@ class UssdSimulator
     private function displayMenu(array $menu): void
     {
         foreach ($menu as $key => $value) {
-            if ($key === 'title') continue;
+            if ($key === 'title') {
+                continue;
+            }
             if (is_array($value) && isset($value['title'])) {
                 echo "$key. {$value['title']}\n";
             } elseif (is_string($value)) {

@@ -27,14 +27,14 @@ linting, documentation and continuous integration.
 
 ## Naming conventions
 
-| Element        | Convention         | Example                        |
-|----------------|--------------------|--------------------------------|
-| **Classes**    | `PascalCase`       | `UssdSimulator`, `MenuLoader`  |
-| **Methods**    | `camelCase()`      | `startSession()`, `loadMenu()` |
-| **Variables**  | `camelCase`        | `$userInput`, `$menuPath`      |
-| **Constants**  | `UPPER_SNAKE_CASE` | `ACTION_EXIT`, `MAX_DEPTH`     |
-| **PHP files**  | `snake_case`       | `menu_loader.php`              |
-| **Namespaces** | `PascalCase`       | `App\Core`, `App\Menu`         |
+| Element        | Convention         | Example                                                        |
+|----------------|--------------------|----------------------------------------------------------------|
+| **Classes**    | `PascalCase`       | `UssdSimulator`, `MenuLoader`                                  |
+| **Methods**    | `camelCase()`      | `startSession()`, `loadMenu()`                                 |
+| **Variables**  | `camelCase`        | `$userInput`, `$menuPath`                                      |
+| **Constants**  | `UPPER_SNAKE_CASE` | `ACTION_EXIT`, `MAX_DEPTH`                                     |
+| **PHP files**  | `snake_case`       | `menu_loader.php`                                              |
+| **Namespaces** | `PascalCase`       | `Harenafiantso\Prog5Ussd\Core`, `Harenafiantso\Prog5Ussd\Menu` |
 
 ## Linting
 
