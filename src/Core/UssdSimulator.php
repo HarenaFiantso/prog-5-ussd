@@ -20,32 +20,28 @@ class UssdSimulator
 
     private function navigate(array $currentMenu): void
     {
-        while (true) {
-            $this->displayMenu($currentMenu);
-            $choice = $this->prompt();
-            if (!isset($currentMenu[$choice])) {
-                echo "Option inconnue, Veuillez réessayer...\n";
-            }
-            $selection = $currentMenu[$choice];
-            if (is_string($selection)) {
-                match ($selection) {
-                    ACTION_EXIT => $this->exit(),
-                    ACTION_MAIN_MENU => $this->goToMainMenu(),
-                    ACTION_BACK => $this->goBack(),
-                    default => print("Option inconnue")
-                };
-                return;
-            }
-            if (isset($selection['options'])) {
-                $this->history[] = $currentMenu;
-                $this->navigate($selection['options']);
-            } else {
-                echo $selection['title'] . "\n";
-                echo "Simulation en cours";
-                sleep(1);
-                $this->goToMainMenu();
-            }
-            return;
+        $this->displayMenu($currentMenu);
+        $choice = $this->prompt();
+        if (!isset($currentMenu[$choice])) {
+            echo "Option inconnue, veuillez réessayer...\n";
+            $this->navigate($currentMenu);
+        }
+        $selection = $currentMenu[$choice];
+        if (is_string($selection)) {
+            match ($selection) {
+                ACTION_EXIT => $this->exit(),
+                ACTION_MAIN_MENU => $this->goToMainMenu(),
+                ACTION_BACK => $this->goBack(),
+                default => print("Option inconnue\n")
+            };
+        } elseif (isset($selection['options'])) {
+            $this->history[] = $currentMenu;
+            $this->navigate($selection['options']);
+        } else {
+            echo $selection['title'] . "\n";
+            echo "Simulation en cours\n";
+            sleep(1);
+            $this->goToMainMenu();
         }
     }
 
