@@ -11,12 +11,11 @@ class UssdSimulator
     private readonly NavigationService $navigation;
 
     public function __construct(
-        array              $menus,
-        ?MenuRenderer      $renderer = null,
-        ?InputHandler      $inputHandler = null,
+        array $menus,
+        ?MenuRenderer $renderer = null,
+        ?InputHandler $inputHandler = null,
         ?NavigationService $navigation = null
-    )
-    {
+    ) {
         $this->renderer = $renderer ?? new MenuRenderer();
         $this->inputHandler = $inputHandler ?? new InputHandler();
         $this->navigation = $navigation ?? new NavigationService($menus);
