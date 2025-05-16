@@ -6,76 +6,43 @@ use JetBrains\PhpStorm\NoReturn;
 
 class UssdSimulator
 {
-    private array $history = [];
+    private readonly MenuRenderer $renderer;
+    private readonly InputHandler $inputHandler;
+    private readonly NavigationService $navigation;
 
-    public function __construct(private readonly array $menus)
+    public function __construct(
+        array              $menus,
+        ?MenuRenderer      $renderer = null,
+        ?InputHandler      $inputHandler = null,
+        ?NavigationService $navigation = null
+    )
     {
+        $this->renderer = $renderer ?? new MenuRenderer();
+        $this->inputHandler = $inputHandler ?? new InputHandler();
+        $this->navigation = $navigation ?? new NavigationService($menus);
     }
 
     public function start(): void
     {
-        $this->displayWelcomeMessage();
-        $this->navigate($this->menus['options']);
+        $this->renderer->displayWelcomeMessage();
+        $this->navigate($this->navigation->getMainMenu());
     }
 
     private function navigate(array $currentMenu): void
     {
-        $this->displayMenu($currentMenu);
-        $choice = $this->promptForChoice();
+        try {
+            $this->renderer->displayMenu($currentMenu);
+            $choice = $this->inputHandler->promptForChoice();
 
-        if (!$this->isValidChoice($choice, $currentMenu)) {
-            $this->handleInvalidChoice($currentMenu);
-            return;
-        }
-
-        $this->processSelection($currentMenu[$choice], $currentMenu);
-    }
-
-    private function displayWelcomeMessage(): void
-    {
-        echo "Simulation USSD démarrée...\n";
-    }
-
-    private function displayMenu(array $menu): void
-    {
-        foreach ($menu as $key => $value) {
-            if ($key === 'title') {
-                continue;
+            if (!$this->inputHandler->isValidChoice($choice, $currentMenu)) {
+                $this->handleInvalidChoice($currentMenu);
+                return;
             }
 
-            if (is_array($value) && isset($value['title'])) {
-                echo "$key. {$value['title']}\n";
-            } elseif (is_string($value)) {
-                echo "$key. " . $this->resolveActionName($value) . "\n";
-            }
-        }
-    }
-
-    private function promptForChoice(): string
-    {
-        echo "Choisissez une option (# pour quitter) : ";
-        $input = trim(fgets(STDIN));
-
-        if ($input === '#') {
+            $this->processSelection($currentMenu[$choice], $currentMenu);
+        } catch (ExitSimulationException) {
             $this->exit();
         }
-
-        if (!$this->isValidInput($input)) {
-            echo "Option invalide, veuillez entrer un numéro ou # pour quitter.\n";
-            return $this->promptForChoice();
-        }
-
-        return $input;
-    }
-
-    private function isValidInput(string $input): bool
-    {
-        return is_numeric($input) && $input !== '';
-    }
-
-    private function isValidChoice(string $choice, array $currentMenu): bool
-    {
-        return isset($currentMenu[$choice]);
     }
 
     private function handleInvalidChoice(array $currentMenu): void
@@ -89,9 +56,11 @@ class UssdSimulator
         if (is_string($selection)) {
             $this->handleAction($selection);
         } elseif (isset($selection['options'])) {
-            $this->navigateToSubMenu($currentMenu, $selection['options']);
+            $this->navigate($this->navigation->navigateToSubMenu($currentMenu, $selection['options']));
         } else {
-            $this->handleContentDisplay($selection);
+            $this->renderer->displayContent($selection);
+            sleep(1);
+            $this->goToMainMenu();
         }
     }
 
@@ -100,7 +69,7 @@ class UssdSimulator
         match ($action) {
             ACTION_EXIT => $this->exit(),
             ACTION_MAIN_MENU => $this->goToMainMenu(),
-            ACTION_BACK => $this->goBack(),
+            ACTION_BACK => $this->navigate($this->navigation->goBack()),
             default => $this->handleUnknownAction()
         };
     }
@@ -111,46 +80,11 @@ class UssdSimulator
         $this->goToMainMenu();
     }
 
-    private function navigateToSubMenu(array $currentMenu, array $subMenu): void
-    {
-        $this->history[] = $currentMenu;
-        $this->navigate($subMenu);
-    }
-
-    private function handleContentDisplay(array $selection): void
-    {
-        echo $selection['title'] . "\n";
-        echo "Simulation en cours\n";
-        sleep(1);
-        $this->goToMainMenu();
-    }
-
-    private function resolveActionName(string $action): string
-    {
-        return match ($action) {
-            ACTION_EXIT => "Quitter",
-            ACTION_MAIN_MENU => "Menu principal",
-            ACTION_BACK => "Retour",
-            default => "Option inconnue"
-        };
-    }
-
     private function goToMainMenu(): void
     {
-        $this->history = [];
+        $this->navigation->resetHistory();
         echo "Menu principal...\n";
-        $this->navigate($this->menus['options']);
-    }
-
-    private function goBack(): void
-    {
-        if (empty($this->history)) {
-            $this->goToMainMenu();
-            return;
-        }
-
-        $previousMenu = array_pop($this->history);
-        $this->navigate($previousMenu);
+        $this->navigate($this->navigation->getMainMenu());
     }
 
     #[NoReturn]
